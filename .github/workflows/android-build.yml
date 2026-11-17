@@ -3,7 +3,8 @@ name: PDF Master APK Build
 on:
   workflow_dispatch:
   push:
-    branches: [ main ]
+    branches:
+      - main
 
 jobs:
   build:
@@ -22,14 +23,17 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v4
 
+      - name: Check project files
+        run: ls -la
+
       - name: Build APK
         run: |
-          cd android
           chmod +x gradlew
-          ./gradlew assembleDebug
+          ./gradlew --no-daemon assembleDebug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: PDF-Master-APK
-          path: android/app/build/outputs/apk/debug/*.apk
+          path: app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
